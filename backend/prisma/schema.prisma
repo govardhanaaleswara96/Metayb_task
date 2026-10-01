@@ -1,0 +1,125 @@
+generator client {
+ provider = "prisma-client-js"
+}
+datasource db {
+ provider = "sqlite"
+ url = env("DATABASE_URL")
+}
+enum Role {
+ DISTRIBUTOR
+ SALES_MANAGER
+}
+enum Tier {
+ BRONZE
+ SILVER
+ GOLD
+}
+enum OrderStatus {
+ Placed
+ PendingApproval
+ Confirmed
+ Rejected
+ Dispatched
+ Delivered
+ Cancelled
+}
+enum ActorType {
+ USER
+ SYSTEM
+}
+enum PointsKind {
+ AWARD
+ REVERSAL
+}
+model User {
+ id String @id @default(cuid())
+ name String
+ role Role
+ distributor Distributor?
+ events OrderEvent[]
+}
+model Distributor {
+ id String @id @default(cuid())
+ userId String @unique
+ user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+ creditLimitMinor Int
+ tier Tier @default(BRONZE)
+ orders Order[]
+ pointsEntries PointsEntry[]
+}
+model Product {
+ id String @id @default(cuid())
+ sku String @unique
+ name String
+ unitPriceMinor Int
+ stockQuantity Int
+ reservedQuantity Int @default(0)
+ orderItems OrderItem[]
+}
+model Order {
+ id String @id @default(cuid())
+ distributorId String
+ distributor Distributor @relation(fields: [distributorId], references: [id], onDelete: Restrict)
+ status OrderStatus @default(Placed)
+ subtotalMinor Int
+ discountPercent Int
+ discountMinor Int
+ totalMinor Int
+ idempotencyKey String?
+ createdAt DateTime @default(now())
+ items OrderItem[]
+ events OrderEvent[]
+ pointsEntries PointsEntry[]
+ @@unique([distributorId, idempotencyKey])
+ @@index([distributorId, status])
+}
+model OrderItem {
+ id String @id @default(cuid())
+ orderId String
+ order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+ productId String
+ product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+ quantity Int
+ unitPriceMinor Int
+ lineSubtotalMinor Int
+ @@unique([orderId, productId])
+}
+model OrderEvent {
+ id String @id @default(cuid())
+ orderId String
+ order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+ fromStatus OrderStatus
+ toStatus OrderStatus
+ actorType ActorType
+ actorUserId String?
+ actorUser User? @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+ createdAt DateTime @default(now())
+ outbox ErpOutbox?
+ @@index([orderId, createdAt])
+}
+model PointsEntry {
+ id String @id @default(cuid())
+ distributorId String
+ distributor Distributor @relation(fields: [distributorId], references: [id], onDelete: Restrict)
+ orderId String
+ order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+ kind PointsKind
+ pointsDelta Int
+ createdAt DateTime @default(now())
+ reversesEntryId String? @unique
+ reversesEntry PointsEntry? @relation("Reversal", fields: [reversesEntryId], references: [id], onDelete: Restrict)
+ reversal PointsEntry? @relation("Reversal")
+ @@unique([orderId, kind])
+ @@index([distributorId, createdAt])
+}
+model ErpOutbox {
+ id String @id @default(cuid())
+ orderEventId String @unique
+ orderEvent OrderEvent @relation(fields: [orderEventId], references: [id], onDelete: Restrict)
+ payloadJson String
+ attemptCount Int @default(0)
+ nextAttemptAt DateTime @default(now())
+ sentAt DateTime?
+ lastError String?
+ @@index([sentAt, nextAttemptAt])
+}

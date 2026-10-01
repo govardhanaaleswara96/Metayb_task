@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "private": true,
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --import tsx --watch src/server.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node --env-file-if-exists=.env dist/src/server.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "node --env-file-if-exists=.env scripts/prepare-db.cjs && prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "test": "node --import tsx --test --test-concurrency=1 tests/*.test.ts",
+    "erp:demo": "node --env-file-if-exists=.env --import tsx src/integrations/erpDemo.ts"
+  },
+  "prisma": {
+    "seed": "node --import tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.0",
+    "express": "^5.1.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "prisma": "6.19.0",
+    "typescript": "~5.8.3",
+    "tsx": "^4.20.0",
+    "@types/node": "^22.0.0",
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17"
+  }
+}

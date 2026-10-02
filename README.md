@@ -75,4 +75,4 @@ seed history and events predating the integration are not replayed to ERP.
 
 Schema and constraints are in Prisma/migrations and `schema.dbml`. See `NOTES.md`
 for decisions and limitations. Do not commit `.env`, runtime databases, `dist` or
-`node_modules`. Capture the three requested screenshots in `pitch.md` before submission.
+`node_modules`. The final screenshots referenced by `pitch.md` are included in `docs/screenshots/`: `distributor-cart.png`, `manager-approvals.png` and `order-history.png`.

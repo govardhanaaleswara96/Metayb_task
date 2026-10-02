@@ -15,7 +15,9 @@
 - Build one order with several products and see its confirmed price and status.
 - See current credit, loyalty points and tier; qualifying tiers earn better discounts.
 
-**Screenshot required:** capture the actual Silver distributor Catalogue & cart screen with loyalty/credit cards and the editable cart. Replace this instruction with one application screenshot.
+![Distributor catalogue and editable cart showing stock and estimated discount](docs/screenshots/distributor-cart.png)
+
+A Gold distributor reviews 10 Sugar Packs: subtotal 1,500, estimated 6% discount and total 1,410. Unavailable products remain visible.
 
 ---
 
@@ -26,7 +28,9 @@
 - Stock is reserved together for the entire order, protecting the final available unit.
 - Rejection or eligible cancellation releases the stock commitment.
 
-**Screenshot required:** capture the actual Sales Manager Pending Approvals queue showing distributor, total, credit limit, Approve and Reject. Replace this instruction with one application screenshot.
+![Sales Manager pending approvals with distributor credit limit and actions](docs/screenshots/manager-approvals.png)
+
+A Bronze distributor order of 17,250 awaits approval against a credit limit of 5,000.
 
 ---
 
@@ -37,7 +41,9 @@
 - Confirmation awards loyalty points; eligible cancellation reverses them.
 - Every new status change queues an ERP notification; temporary delivery failures retry.
 
-**Screenshot required:** capture actual Order Details showing Items, Financial Summary and Status History after manager actions. Replace this instruction with one application screenshot.
+![Order details showing financial summary and dated status history](docs/screenshots/order-history.png)
+
+Order details show the fixed total of 17,250 and the Placed → Pending Approval transition, recorded with System actor and timestamp.
 
 ---
 
